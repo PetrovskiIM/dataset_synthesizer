@@ -1,7 +1,8 @@
 import pathlib
 
-ROOT_PATH = "./data"
+ROOT = "./data"
 
+# region instrument configs
 instruments_list = ['Piano', 'EnglishHorn', 'ElectricOrgan', 'Harpsichord', 'PipeOrgan', 'Violin']
 instrument_pitch_bondaries = {
     'Piano': {
@@ -29,42 +30,35 @@ instrument_pitch_bondaries = {
         "min_note": 10
     }
 }
-template_paths = [f"/home/petrovskiyim/Projects/audio-representation/data/maestro-v2.0.0/{year}" for year in
-                  ["2004", "2006", "2008", "2009", "2011", "2013", "2014", "2015", "2017"]]
+template_paths = [f"/home/petrovskiyim/Projects/audio-representation/data/maestro-v2.0.0/{year}" for year in ["2004"]]
+#, "2006", "2008", "2009", "2011", "2013", "2014", "2015", "2017"]]
+# endregion
 
-n_chunks_per_midi = 2
+n_chunks = 2
 chunk_size = 30
 chunks = [{"begin_i": 30, "end_i": 60}, {"begin_i": 30, "end_i": 80}]
-
 n_observations = 40000
 
 
-copying_files_names = ["source_folder", "name", "path"]
-chunked_files_names = copying_files_names + ["begin_i", "end_i"]
-names_with_shift_meta = chunked_files_names + ["max_note", "min_note"]
-instrument_files_names = names_with_shift_meta + ["instrument"]
+copies_columns = ["source_folder", "name", "path"]
+chunked_copies_columns = copies_columns + ["begin_i", "end_i"]
+columns_with_shift_meta = chunked_copies_columns + ["max_note", "min_note"]
+re_instrumented_chunked_copies_columns_with_shift_meta = columns_with_shift_meta + ["instrument"]
+shifted_re_instrumented_chunked_copies_columns_with_shift_meta = \
+    re_instrumented_chunked_copies_columns_with_shift_meta + ["shift"]
 
 
-midi_files_chunks_storage_path = f"{ROOT_PATH}/chunked"
-midi_files_copies_storage_path = pathlib.Path(f"{ROOT_PATH}/cashed")
+copies_storage_path = pathlib.Path(f"{ROOT}/copies")
+chunked_copies_storage_path = pathlib.Path(f"{ROOT}/chunked_copies")
+re_instrumented_chunked_copies_storage_path = pathlib.Path(f"{ROOT}/re_instrumented_chunked_copies")
+shifted_re_instrumented_chunked_copies_storage_path = pathlib.Path(f"{ROOT}/shifted_re_instrumented_chunked_copies")
 
-midi_files_copies_storage_path.mkdir(parents=True, exist_ok=True)
-
-shifting_meta_csv_path = pathlib.Path(f"{ROOT_PATH}/chunked")
-
-shifting_meta_csv_path.mkdir(parents=True, exist_ok=True)
-
-copying_csv_path = midi_files_copies_storage_path
-chunking_csv_path = f"{ROOT_PATH}/chunked"
-csv_paths_with_shift_meta = copying_csv_path
-
-different_instrument_csv_path = f"{ROOT_PATH}/final"
-different_instrument_storage_path = pathlib.Path(f"{ROOT_PATH}/final")
-different_instrument_storage_path.mkdir(parents=True, exist_ok=True)
+train_wav_storage_path = pathlib.Path(f"{ROOT}/aug")
+test_wav_storage_path = pathlib.Path(f"{ROOT}/aug_test")
 
 
-train_wav_storage_path = pathlib.Path(f"{ROOT_PATH}/aug")
-train_wav_storage_path.mkdir(parents=True, exist_ok=True)
-test_wav_storage_path = pathlib.Path(f"{ROOT_PATH}/aug_test")
-test_wav_storage_path.mkdir(parents=True, exist_ok=True)
-
+copies_csv_path = copies_storage_path
+chunked_copies_csv_path = chunked_copies_storage_path
+csv_paths_with_shift_meta = chunked_copies_csv_path
+re_instrumented_chunked_copies_csv_path = re_instrumented_chunked_copies_storage_path
+shifted_re_instrumented_chunked_copies_csv_path = shifted_re_instrumented_chunked_copies_storage_path

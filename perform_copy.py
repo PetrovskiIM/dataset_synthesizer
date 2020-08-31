@@ -1,14 +1,16 @@
 import os
 import pandas as pd
 from config import template_paths, \
-    copying_files_names as names, \
-    midi_files_copies_storage_path as storage_path, \
-    copying_csv_path as target_csv_path
+    copies_columns as names, \
+    copies_storage_path as storage_path, \
+    copies_csv_path as target_csv_path
 import warnings
 
 warnings.simplefilter("ignore")
 
 if __name__ == '__main__':
+    storage_path.mkdir(parents=True, exist_ok=True)
+
     i = 0
     observations = []
     for source_folder in template_paths:

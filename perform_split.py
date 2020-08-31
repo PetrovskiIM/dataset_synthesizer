@@ -1,18 +1,21 @@
 from multiprocessing import Pool
 import pandas as pd
 import augmentations
-from config import copying_files_names as template_names, \
-    midi_files_copies_storage_path as template_storage_path, \
-    chunks, \
-    chunked_files_names as names, \
-    midi_files_chunks_storage_path as target_path, \
-    chunking_csv_path as target_csv_path
+from config import chunks, \
+    copies_columns as template_names, \
+    chunked_copies_columns as names, \
+    copies_storage_path as template_storage_path, \
+    chunked_copies_storage_path as target_path, \
+    copies_csv_path as template_csv_path, \
+    chunked_copies_csv_path as target_csv_path
 import warnings
 
 warnings.simplefilter("ignore")
 
 if __name__ == '__main__':
-    dispatcher_df = pd.read_csv(f"{template_storage_path}.csv", names=template_names)
+    target_path.mkdir(parents=True, exist_ok=True)
+
+    dispatcher_df = pd.read_csv(f"{template_csv_path}.csv", names=template_names)
     names_of_files = dispatcher_df["name"].values
     for chunk_i, chunk in enumerate(chunks):
         def f(x):

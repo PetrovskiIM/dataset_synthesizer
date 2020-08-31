@@ -1,32 +1,45 @@
+from multiprocessing import Pool
+import pandas as pd
+from config import instrument_pitch_bondaries, \
+    re_instrumented_chunked_copies_columns_with_shift_meta as template_names, \
+    shifted_re_instrumented_chunked_copies_columns_with_shift_meta as names, \
+    re_instrumented_chunked_copies_csv_path as template_csv_path, \
+    shifted_re_instrumented_chunked_copies_csv_path as target_csv_path, \
+    shifted_re_instrumented_chunked_copies_storage_path as target_storage_path
+import augmentations
 
-# region change pitch
-dispatcher = []
-current_columns_names.append("shift")
-dispatcher_df[["up_boundary", "down_bondary"]] = \
-    pd.DataFrame.from_records(
-        [instrument_pitch_bondaries[instrument] for instrument in dispatcher_df["instrument"].values])[
-        ["max_note", "min_note"]]
-for shift in range(-int(max(dispatcher_df["note"].min() - min, 0) // 7),
-                   int((127 - dispatcher_df["note"].max()) // 7)):
-    observations_in_range_for_current_shift = \
-        dispatcher_df.loc[(dispatcher_df["max_note"] + 7 * shift <= dispatcher_df["up_boundary"]) &
-                          (dispatcher_df["min_note"] + 7 * shift >= dispatcher_df["down_bondary"])]
+import warnings
 
-    folder_and_name = \
-        zip([f'{chunk_to_index({"begin_i": begin_i, "end_i": end_i})}/{instrument}'
-             for begin_i, end_i, instrument in
-             observations_in_range_for_current_shift[["begin_i", "end_i", "instrument"]]],
-            observations_in_range_for_current_shift["name"])
+warnings.simplefilter("ignore")
 
+if __name__ == '__main__':
+    target_storage_path.mkdir(parents=True, exist_ok=True)
 
-    def f(x):
-        augmentations.change_octave(f"{template_folder}/{x[0]}/{x[1]}.mid",
-                                    f"{target_folder}/{x[0]}/{instrument}/{x[1]}.mid", shift)
+    dispatcher_df = pd.read_csv(f"{template_csv_path}.csv", names=template_names)
+    boundaries = pd.DataFrame.from_records(
+        [instrument_pitch_bondaries[instrument]
+         for instrument in dispatcher_df["instrument"].values])[["max_note", "min_note"]]
+    dispatcher_df["up_boundary"] = boundaries["max_note"].values
+    dispatcher_df["down_boundary"] = boundaries["min_note"].values
 
+    dispatcher_df["shift"] = 0
+    paths_df = dispatcher_df[["path"]].copy(deep=True)
+    for shift in range(-20, 20):
+        criterion_results = (dispatcher_df["max_note"] + 7 * shift <= dispatcher_df["up_boundary"]) & \
+                            (dispatcher_df["min_note"] + 7 * shift >= dispatcher_df["down_boundary"])
+        observations_in_range_for_current_shift = dispatcher_df.loc[criterion_results]
+        if len(observations_in_range_for_current_shift) == 0:
+            continue
+        paths = paths_df.loc[criterion_results, "path"].values
 
-    with Pool(5) as p:
-        print(p.map(f, folder_and_name))
-    observations_in_range_for_current_shift["shift"] = shift
-    dispatcher.append(observations_in_range_for_current_shift[current_columns_names].values)
-dispatcher_df = pd.DataFrame(np.concatenate(dispatcher), columns=current_columns_names)
-dispatcher_df.to_csv("cur.csv")
+        def f(path):
+            augmentations.change_octave(f"{path}.mid",
+                                        f"{target_storage_path}/{path.split('/')[-1]}_{shift}.mid", shift)
+
+        with Pool(5) as p:
+            p.map(f, paths)
+        observations_in_range_for_current_shift["shift"] = shift
+        observations_in_range_for_current_shift["path"] = [f"{target_storage_path}/{path.split('/')[-1]}_{shift}.mid"
+                                                           for path in paths]
+        observations_in_range_for_current_shift[names].to_csv(f"{target_csv_path}.csv", index=False, header=False,
+                                                              mode="a")

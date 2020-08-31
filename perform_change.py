@@ -1,11 +1,11 @@
 from multiprocessing import Pool
 import pandas as pd
 from config import instruments_list, instrument_pitch_bondaries, \
-    names_with_shift_meta as template_names, \
-    instrument_files_names as names, \
-    shifting_meta_csv_path as template_csv_path, \
-    different_instrument_csv_path as target_csv_path, \
-    different_instrument_storage_path as target_storage_path
+    columns_with_shift_meta as template_names, \
+    re_instrumented_chunked_copies_columns_with_shift_meta as names, \
+    csv_paths_with_shift_meta as template_csv_path, \
+    re_instrumented_chunked_copies_csv_path as target_csv_path, \
+    re_instrumented_chunked_copies_storage_path as target_storage_path
 import augmentations
 
 import warnings
@@ -13,6 +13,8 @@ import warnings
 warnings.simplefilter("ignore")
 
 if __name__ == '__main__':
+    target_storage_path.mkdir(parents=True, exist_ok=True)
+
     dispatcher_df = pd.read_csv(f"{template_csv_path}.csv", names=template_names)
     dispatcher_df["instrument"] = "Piano"
     path_df = dispatcher_df["path"].copy(deep=True)
@@ -34,6 +36,5 @@ if __name__ == '__main__':
             p.map(f, paths)
 
         observations_in_range["instrument"] = instrument
-        observations_in_range["path"] = [f"{target_storage_path}/{path.split('/')[-1]}_{instrument}"
-                                         for path in observations_in_range["path"].values]
+        observations_in_range["path"] = [f"{target_storage_path}/{path.split('/')[-1]}_{instrument}" for path in paths]
         observations_in_range[names].to_csv(f"{target_csv_path}.csv", index=False, header=False, mode='a')

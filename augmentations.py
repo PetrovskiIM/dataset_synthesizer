@@ -40,9 +40,14 @@ def change_instrument(path, target_path, instrument='Piano'):
 
 def change_octave(path, target_path, shift=1):
     mido_object = MidiFile(path, clip=True)
-    readable_track_df, begin_of_track, end_of_track = convert_to_axillary_representation(mido_object.tracks[1])
+    print(len(mido_object.tracks))
+    track_i = 1
+    if len(mido_object.tracks) ==1:
+        print("SOMETHING WENT WRONG AND MIDO FILE WAS RECIVED WITH SINGLE TRACK")
+        track_i = 0
+    readable_track_df, begin_of_track, end_of_track = convert_to_axillary_representation(mido_object.tracks[track_i])
     readable_track_df["note"] += shift * 7
-    mido_object.tracks[1] = convert_to_midi_track(readable_track_df, begin_of_track, end_of_track)
+    mido_object.tracks[track_i] = convert_to_midi_track(readable_track_df, begin_of_track, end_of_track)
     mido_object.save(target_path)
 
 
