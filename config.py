@@ -1,18 +1,6 @@
 import pathlib
 
-ROOT_PATH = "/home/petrovskiyim/Projects/audio_representaion/data"
-
-
-#
-# templates_storage_path = pathlib.Path(f"./data/template")
-# midi_files_copies_storage_path = pathlib.Path(f"./data/casted")
-# wav_storage_path = pathlib.Path(f"./data/aug_wav")
-# train_wav_path, test_wav_path = pathlib.Path(f"./data/for_demo"), pathlib.Path(f"./data/aug_test")
-# pathes = [templates_storage_path, midi_files_copies_storage_path, train_wav_path, test_wav_path, wav_storage_path]
-# for path in pathes:
-#     path.mkdir(parents=True, exist_ok=True)
-
-
+ROOT_PATH = "./data"
 
 instruments_list = ['Piano', 'EnglishHorn', 'ElectricOrgan', 'Harpsichord', 'PipeOrgan', 'Violin']
 instrument_pitch_bondaries = {
@@ -56,17 +44,27 @@ chunked_files_names = copying_files_names + ["begin_i", "end_i"]
 names_with_shift_meta = chunked_files_names + ["max_note", "min_note"]
 instrument_files_names = names_with_shift_meta + ["instrument"]
 
+
+midi_files_chunks_storage_path = f"{ROOT_PATH}/chunked"
 midi_files_copies_storage_path = pathlib.Path(f"{ROOT_PATH}/cashed")
+
 midi_files_copies_storage_path.mkdir(parents=True, exist_ok=True)
+
+shifting_meta_csv_path = pathlib.Path(f"{ROOT_PATH}/chunked")
+
+shifting_meta_csv_path.mkdir(parents=True, exist_ok=True)
 
 copying_csv_path = midi_files_copies_storage_path
 chunking_csv_path = f"{ROOT_PATH}/chunked"
-
-midi_files_chunks_storage_path = f"{ROOT_PATH}/chunked"
-
-shifting_meta_csv_path = pathlib.Path(f"{ROOT_PATH}/chunked")
-shifting_meta_csv_path.mkdir(parents=True, exist_ok=True)
-
 csv_paths_with_shift_meta = copying_csv_path
 
+different_instrument_csv_path = f"{ROOT_PATH}/final"
+different_instrument_storage_path = pathlib.Path(f"{ROOT_PATH}/final")
+different_instrument_storage_path.mkdir(parents=True, exist_ok=True)
+
+
+train_wav_storage_path = pathlib.Path(f"{ROOT_PATH}/aug")
+train_wav_storage_path.mkdir(parents=True, exist_ok=True)
+test_wav_storage_path = pathlib.Path(f"{ROOT_PATH}/aug_test")
+test_wav_storage_path.mkdir(parents=True, exist_ok=True)
 
