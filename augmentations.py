@@ -56,6 +56,6 @@ def cut_chunk(path, target_path, begin_i=20, end_i=60):
 def determine_range(path):
     mido_object = MidiFile(path, clip=True)
     readable_track_df, begin_of_track, end_of_track = convert_to_axillary_representation(mido_object.tracks[1])
-    return {"min_note":readable_track_df["note"].min(),
-           "max_note":readable_track_df["note"].max()}
+    return {"min_note": readable_track_df["note"].min(),
+            "max_note": readable_track_df["note"].max()}
 # endregion
