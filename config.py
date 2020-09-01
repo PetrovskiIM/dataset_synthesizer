@@ -30,8 +30,8 @@ instrument_pitch_bondaries = {
         "min_note": 10
     }
 }
-template_paths = [f"/home/petrovskiyim/Projects/audio-representation/data/maestro-v2.0.0/{year}" for year in ["2004"]]
-#, "2006", "2008", "2009", "2011", "2013", "2014", "2015", "2017"]]
+template_paths = [f"/home/petrovskiyim/Projects/audio-representation/data/maestro-v2.0.0/{year}" for year in
+                  ["2004", "2006", "2008", "2009", "2011", "2013", "2014", "2015", "2017"]]
 # endregion
 
 n_chunks = 2

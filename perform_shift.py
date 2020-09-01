@@ -39,7 +39,7 @@ if __name__ == '__main__':
         with Pool(5) as p:
             p.map(f, paths)
         observations_in_range_for_current_shift["shift"] = shift
-        observations_in_range_for_current_shift["path"] = [f"{target_storage_path}/{path.split('/')[-1]}_{shift}.mid"
+        observations_in_range_for_current_shift["path"] = [f"{target_storage_path}/{path.split('/')[-1]}_{shift}"
                                                            for path in paths]
         observations_in_range_for_current_shift[names].to_csv(f"{target_csv_path}.csv", index=False, header=False,
                                                               mode="a")
