@@ -3,4 +3,4 @@ python perform_split.py
 python collect_shifting_meta.py
 python perform_change.py
 python perform_shift.py
-python waviolize.py
+python waviolize_pure.py

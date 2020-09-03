@@ -1,0 +1,12 @@
+melspectrogram_transform_parameters:
+  sample_rate: 22050
+  n_mels: 128
+  hop_length: 256
+  win_length: 1536
+  n_fft: 2048
+
+normalization_parameters:
+  ref_level: 20.0
+  min_level: -80.0
+  min_value: 0
+  max_value: 1
