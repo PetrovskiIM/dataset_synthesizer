@@ -41,14 +41,14 @@ def change_instrument(path, target_path, instrument_name='Piano'):
     s.write('midi', target_path)
 
 
-def change_octave(path, target_path, shift=1):
+def change_octave(path, target_path, shift=1, shift_step=7):
     pm = pretty_midi.PrettyMIDI(path)
     for instrument in pm.instruments:
         # Skip drum instruments - their notes aren't pitched!
         if instrument.is_drum:
             continue
         for note in instrument.notes:
-            note.pitch += 7*shift
+            note.pitch += shift_step*shift
     pm.write(target_path)
     # mido_object = MidiFile(path, clip=True)
     # # print(len(mido_object.tracks))

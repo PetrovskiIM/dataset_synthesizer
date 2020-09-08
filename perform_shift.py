@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
         def f(path):
             augmentations.change_octave(f"{path}.mid",
-                                        f"{target_storage_path}/{path.split('/')[-1]}_{shift}.mid", shift)
+                                        f"{target_storage_path}/{path.split('/')[-1]}_{shift}.mid", shift, shift_step)
 
 
         with Pool(5) as p:
