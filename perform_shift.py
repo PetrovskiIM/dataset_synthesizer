@@ -1,6 +1,6 @@
 from multiprocessing import Pool
 import pandas as pd
-from config import instrument_pitch_bondaries, \
+from config import instrument_pitch_bondaries, shift_step, \
     re_instrumented_chunked_copies_columns_with_shift_meta as template_names, \
     shifted_re_instrumented_chunked_copies_columns_with_shift_meta as names, \
     re_instrumented_chunked_copies_csv_path as template_csv_path, \
@@ -24,17 +24,19 @@ if __name__ == '__main__':
 
     dispatcher_df["shift"] = 0
     paths_df = dispatcher_df[["path"]].copy(deep=True)
-    for shift in range(-20, 20):
-        criterion_results = (dispatcher_df["max_note"] + 7 * shift <= dispatcher_df["up_boundary"]) & \
-                            (dispatcher_df["min_note"] + 7 * shift >= dispatcher_df["down_boundary"])
+    for shift in range(-127 // shift_step, 127 // shift_step):
+        criterion_results = (dispatcher_df["max_note"] + shift_step * shift <= dispatcher_df["up_boundary"]) & \
+                            (dispatcher_df["min_note"] + shift_step * shift >= dispatcher_df["down_boundary"])
         observations_in_range_for_current_shift = dispatcher_df.loc[criterion_results]
         if len(observations_in_range_for_current_shift) == 0:
             continue
         paths = paths_df.loc[criterion_results, "path"].values
 
+
         def f(path):
             augmentations.change_octave(f"{path}.mid",
                                         f"{target_storage_path}/{path.split('/')[-1]}_{shift}.mid", shift)
+
 
         with Pool(5) as p:
             p.map(f, paths)

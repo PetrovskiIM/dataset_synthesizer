@@ -71,9 +71,10 @@ template_paths = [f"/home/petrovskiyim/Projects/audio-representation/data/maestr
 
 # n_chunks = 2
 chunk_size = 30
-chunks = [{"begin_i": 30, "end_i": 60}]#, {"begin_i": 30, "end_i": 80}]
+chunks = [{"begin_i": 30, "end_i": 90}]#, {"begin_i": 30, "end_i": 80}]
 n_observations = 40000
 
+shift_step = 1
 
 copies_columns = ["source_folder", "name", "path"]
 chunked_copies_columns = copies_columns + ["begin_i", "end_i"]
